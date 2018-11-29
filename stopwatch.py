@@ -8,14 +8,18 @@ class Stopwatch:
 
     def start(self):
         ''' Starts the timer '''
-        self.start = time.time()
+        self.beg = time.time()
 
     def end(self):
         ''' Ends the timer and adds time to elapsed '''
         # in case someone calls end twice
-        if self.start:
-            self.elapsed += time.time() - self.start
-            self.start = False
+        if self.beg:
+            self.elapsed += time.time() - self.beg
+            self.beg = False
+
+    def reset(self):
+        ''' Resets the counter of time '''
+        self.elapsed = 0
 
 
 if __name__ == '__main__':
@@ -30,3 +34,15 @@ if __name__ == '__main__':
     # testing that calling end does nothing
     sw.end()
     print(sw.elapsed)
+
+    # adding another interval
+    sw.start()
+    time.sleep(0.45)
+    sw.end()
+    print(sw.elapsed)
+
+    # reset
+    sw.reset()
+    print(sw.elapsed)
+
+
