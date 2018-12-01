@@ -1,48 +1,67 @@
+import os
+import sys
+import shelve
 import time
+from datetime import date
+from datetime import datetime
+
 ''' Using functions time and sleep (for testing) '''
 
 class Stopwatch:
-    def __init__(self):
-        ''' Sets time elapsed to 0'''
-        self.elapsed = 0
 
     def start(self):
-        ''' Starts the timer '''
-        self.beg = time.time()
+        ''' Begins the timer '''
+        with shelve.open('.data') as s:
+            s['beg'] = time.time()
 
     def end(self):
-        ''' Ends the timer and adds time to elapsed '''
-        # in case someone calls end twice
-        if self.beg:
-            self.elapsed += time.time() - self.beg
-            self.beg = False
+        ''' Ends the timer and writes the data '''
+        with shelve.open('.data') as s:
+            # check if beginning is valid (i.e. not 0)
+            if s['beg']:
+                with open('progress.csv', 'a') as fo:
+                    today = datetime.today()
+                    fo.write(', '.join([str(today.year), str(today.month), str(today.day), 
+                        str(s['beg']), str(time.time())]) + "\n")
+                    s['beg'] = 0
+            else: 
+                raise Exception('You pressed end twice in a row')
 
-    def reset(self):
-        ''' Resets the counter of time '''
-        self.elapsed = 0
-
-
+            
 if __name__ == '__main__':
-    sw = Stopwatch()
-    
-    # testing passing 1 second of time
-    sw.start()
-    time.sleep(1)
-    sw.end()
-    print(sw.elapsed)
+    if len(sys.argv) != 2:
+        raise Exception('Please pass a flag')
+    elif sys.argv[1] == '-t': #test if stopwatch works
+        sw = Stopwatch()
 
-    # testing that calling end does nothing
-    sw.end()
-    print(sw.elapsed)
+        sw.start()
+        time.sleep(1)
+        sw.end()
+        sw.start()
+        time.sleep(2)
+        sw.end()
+        with open('progress.csv') as f:
+            lines = f.read()
+        print(lines)
+        os.unlink('progress.csv')
 
-    # adding another interval
-    sw.start()
-    time.sleep(0.45)
-    sw.end()
-    print(sw.elapsed)
+    elif sys.argv[1] == '-c': # create a test file
+        sw = Stopwatch()
 
-    # reset
-    sw.reset()
-    print(sw.elapsed)
+        sw.start()
+        time.sleep(0.1)
+        sw.end()
+        sw.start()
+        time.sleep(0.0001)
+        sw.end()
+        sw.start()
+        time.sleep(0.25)
 
+    elif sys.argv[1] == '-d': # delete the progress file
+        try:
+            os.unlink('progress.csv')
+        except:
+            raise Exception("File progress.csv doesn't exist")
 
+    else: 
+        raise Exception('Please pass a valid flag')
