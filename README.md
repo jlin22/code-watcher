@@ -5,7 +5,8 @@ Code watcher is a basic stopwatch program that you can tell to start the time an
 Have python3 installed
 ## How do you use this?
 To start the stopwatch run:
-`python3 stopwatch.py -b`
+`python3 main.py -b` or `python3 main.py -s`
+
 To end the stopwatch and log the data, run:
-`python3 stopwatch.py -e`
+`python3 main.py -e`
 
