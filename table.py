@@ -22,7 +22,6 @@ class Table:
                         self.content['-'.join(data[i][:3])].append(data[i][3:])
                     except:
                         self.content['-'.join(data[i][:3])] = [data[i][3:]]
-            print('-'.join(data[1][:3])) 
         return self.content
     
     def time_spent(self, date, entry):
@@ -82,21 +81,28 @@ class Table:
 
     def search_day(self, date):
         ''' Searches for all entries with date
-        date is of the form: 'yyyy-mm-dd' '''
+        date is of the form: 'yyyy-mm-dd' 
+        print it nicely'''
+        # our string with nice formatting
+        s = ''
+        s += 'Time spent coding on '
+        s += date
+
+        '''
         print(self.content[date])
         print(date)
         print(self.time_spent(date, self.content[date][0]))
         '''
-        except:
-            print('That date is not in the data')
-            '''
+        return s
 
 
 
 if __name__ == '__main__':
     t = Table()
-    print(t.read_csv('progress.csv'))
+    t.read_csv('progress.csv')
+#    print('read csv:' ,  t.read_csv('progress.csv'))
     print(t.search_day('2018-12-01'))
+
     # testing time_elapsed
     print(t.time_elapsed([0, 0, 0, 1, 1, 1]))
     
