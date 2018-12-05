@@ -28,7 +28,7 @@ class Table:
     def time_spent(self, date, entry):
 
         # calculate the differences between the intervals of time
-        # [year, month, day, hour, minute, day]
+        # [year, month, day, hour, minute, seconds]
         list_date = date.split('-')
         differences = []
         for i in range(3, 6):
@@ -37,6 +37,48 @@ class Table:
         for i in range(0, 3):
             differences.append(int(entry[i + 6]) - int(entry[i]))
         return differences
+
+    def time_elapsed(self, differences):
+        # [year, month, day, hour, minute, seconds] -> time as string
+        # time: _ years, _ months, _ days, _ minutes, _ seconds
+        
+        # if seconds is negative, add 60 seconds, subtract 1 minute
+        if differences[5] < 0: 
+            differences[5] += 60
+            differences[4] -= 1
+
+        # if minutes is negative, subtract 60 minutes and add 1 hour
+        if differences[4] < 0:
+            differences[4] -= 60
+            differences[3] += 1
+        # if hours is negative, add 24 hours and subtract 1 day 
+        if differences[3] < 0:
+            differences[3] += 24
+            differences[2] -= 1
+
+        # if days is negative, add number of days in the month and subtract 1 month
+        if differences[2] < 0:
+            differences[1] -= 1
+            differences[2] += 30
+
+        # if months is negative, subtract 1 year and add 12 months
+        if differences[1] < 0:
+            differences[1] += 12
+            differences[0] -= 1
+        
+        # create a list that represents the string
+        lens_of_time = ['year', 'month', 'day', 'hour', 'minute', 'second']
+        for i in range(len(lens_of_time)):
+            lens_of_time[i] = str(differences[i]) + " " + lens_of_time[i] 
+            if differences[i] != 1:
+                lens_of_time[i] += 's'
+
+        final_str = []
+        for e in lens_of_time:
+            if e[0] != '0':
+                final_str.append(e)
+
+        return ' '.join(final_str)
 
     def search_day(self, date):
         ''' Searches for all entries with date
@@ -55,6 +97,8 @@ if __name__ == '__main__':
     t = Table()
     print(t.read_csv('progress.csv'))
     print(t.search_day('2018-12-01'))
+    # testing time_elapsed
+    print(t.time_elapsed([0, 0, 0, 1, 1, 1]))
     
 
 
