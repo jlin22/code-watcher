@@ -1,3 +1,5 @@
+import sys
+
 class Table:
     ''' Table interacts with csv files ''' 
     ''' Design Choice: Use a list of lists '''
@@ -31,7 +33,6 @@ class Table:
         list_date = date.split('-')
         differences = []
         for i in range(3, 6):
-            print(i - 3)
             differences.append(int(entry[i]) - int(list_date[i - 3]))
         for i in range(0, 3):
             differences.append(int(entry[i + 6]) - int(entry[i]))
@@ -84,28 +85,31 @@ class Table:
         date is of the form: 'yyyy-mm-dd' 
         print it nicely'''
         # our string with nice formatting
-        s = ''
-        s += 'Time spent coding on '
-        s += date
+        s = 'Time spent coding on ' + date + ': '  
+        data_for_day = self.content[date]
 
-        '''
-        print(self.content[date])
-        print(date)
-        print(self.time_spent(date, self.content[date][0]))
-        '''
+        for entry in data_for_day:
+            differences = self.time_spent(date, entry)
+            s += self.time_elapsed(differences) + '\n'
+
         return s
 
 
 
 if __name__ == '__main__':
-    t = Table()
-    t.read_csv('progress.csv')
-#    print('read csv:' ,  t.read_csv('progress.csv'))
-    print(t.search_day('2018-12-01'))
+    valid_flag = '''Enter a valid flag'''
+    if len(sys.argv) != 2:
+        print(valid_flag)
+        exit()
 
-    # testing time_elapsed
-    print(t.time_elapsed([0, 0, 0, 1, 1, 1]))
-    
+    elif sys.argv[1] == '-t':    
+        t = Table()
+        t.read_csv('progress.csv')
+    #    print('read csv:' ,  t.read_csv('progress.csv'))
+        print(t.search_day('2018-12-01'))
 
-
-
+        # testing time_elapsed
+        #print(t.time_elapsed([0, 0, 0, 1, 1, 1]))
+        
+    else:
+        print(valid_flag)
