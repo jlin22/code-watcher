@@ -98,9 +98,15 @@ class Table:
 
 if __name__ == '__main__':
     valid_flag = '''Enter a valid flag'''
+    ask_for_date = '''Insert the date you want to find info about in the form yyyy-mm-dd'''
+
     if len(sys.argv) != 2:
         print(valid_flag)
         exit()
+
+    elif sys.argv[1] == '-s':
+        date = input(ask_for_date)
+        print(t.search_day(date))
 
     elif sys.argv[1] == '-t':    
         t = Table()
